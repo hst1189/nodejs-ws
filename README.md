@@ -1,6 +1,6 @@
 # nodejs-ws
 
-基于serverless实现的vless+ trojan+ shadowsocks+ vmess 四协议，无内核，nodejs通用项目
+基于serverless实现的vless+ trojan+ shadowsocks 三协议，无内核，nodejs通用项目
 
 用于nodejs环境的玩具和容器，基于nodejs的axios,ws库，集成哪吒探针服务(v0或v1)，可自行添加环境变量
 
