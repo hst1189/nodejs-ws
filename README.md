@@ -1,73 +1,53 @@
-<div align="center">
+# nodejs-ws
 
-# Node-ws
-基于serverless实现的vless+trojan双协议代理、轻量、无内核。
+基于serverless实现的vless+ trojan+ shadowsocks+ vmess 四协议，无内核，nodejs通用项目
 
----
+用于nodejs环境的玩具和容器，基于nodejs的axios,ws库，集成哪吒探针服务(v0或v1)，可自行添加环境变量
 
-Telegram交流反馈群组：https://t.me/eooceu
+https://domain/${SUB_APTH} or  https://domain:port/${SUB_APTH} 查看节点信息，（SUB_PATH为自行设置的订阅路径，置默认为sub）
 
-huggingface视频教程地址：https://youtu.be/XERxg9AODeo
+## [web-hosting部署指南](https://github.com/eooce/node-ws/blob/main/web-hosting.md) （适用于所有带nodejs App功能面板）
 
-</div>
-
-
-## [web-hosting部署指南](https://github.com/eooce/node-ws/blob/main/web-hosting.md) （适用于所有带nodejs App功能DirectAdmin面板）
-
-* 用于nodejs环境的玩具和容器，基于nodejs的axios,ws库，vless+trojan双协议，集成哪吒探针服务(v0或v1)，可自行添加环境变量
-
-* PaaS 平台设置的环境变量
-  | 变量名        | 是否必须 | 默认值 | 备注 |
-  | ------------ | ------ | ------ | ------ |
-  | UUID         | 否 |5efabea4-f6d4-91fd-b8f0-17e004c89c60| 开启了哪吒v1,请修改UUID|
-  | PORT         | 否 |  3000  | 监听端口                    |
-  | NEZHA_SERVER | 否 |        | 哪吒v1填写形式：nz.abc.com:8008   哪吒v0填写形式：nz.abc.com|
-  | NEZHA_PORT   | 否 |        | 哪吒v1没有此变量，v0的agent端口| 
-  | NEZHA_KEY    | 否 |        | 哪吒v1的NZ_CLIENT_SECRET或v0的agent端口 |
-  | NAME         | 否 |        | 节点名称前缀，例如：Glitch |
-  | DOMAIN       | 是 |        | 项目分配的域名或已反代的域名，不包括https://前缀  |
-  | SUB_PATH     | 否 |  sub   | 订阅路径   |
-  | AUTO_ACCESS  | 否 |  false | 是否开启自动访问保活,false为关闭,true为开启,需同时填写DOMAIN变量 |
-
-* 域名/${SUB_APTH}查看节点信息，非标端口，域名:端口/${SUB_APTH}  SUB_APTH为自行设置的订阅token，未设置默认为sub
-    
-* 温馨提示：READAME.md为说明文件，请不要上传。
-
-* js混肴地址：https://obfuscator.io
+设置环境变量
+  | 变量名        | 默认值 | 备注 |
+  | ------------ | ------ | ------ |
+  | NEZHA_SERVER |        | 哪吒v1填写形式：nz.abc.com:8008   哪吒v0填写形式：nz.abc.com|
+  | NEZHA_PORT   |        | 哪吒v1没有此变量，v0的agent端口| 
+  | NEZHA_KEY    |        | 哪吒v1的NZ_CLIENT_SECRET或v0的agent端口 |
+  | UUID         |        | 开启了哪吒v1,请修改UUID|
+  | PORT         |  3000  | 监听端口                    |
+  | NAME         |        | 节点名称前缀，例如：Glitch |
+  | DOMAIN       |        | 项目分配的域名或已反代的域名，不带协议前缀 https:// |
+  | SUB_PATH     |  sub   | 订阅路径   |
+  | AUTO_ACCESS  |  false | 是否开启自动访问保活,false为关闭,true为开启,需同时填写DOMAIN变量 |
 
 
 
+> [!TIP]
+> js混肴地址：https://obfuscator.io/legacy-playground
 
-## hugggingfface部署指南
 
-huggingface视频教程地址：https://youtu.be/XERxg9AODeo
+## 制作docker镜像
 
-1. fork 此项目
-2. 在Actions菜单允许 `I understand my workflows, go ahead and enable them` 按钮
-3. 将hug分支中的index.js填写需要的变量后混淆保存，js混肴地址：https://obfuscator.io 
-4. 在.github/workflows/build-hug-image.yml 44中修改镜像名称
-5. 去huggingface创建空白space，docker
-6. 创建一个新文件，文件名`Dockerfile` 内容如下:
+1. 将index.js填写需要的变量后混淆，再保存
+2. 在.github/workflows/build-image.yml 39行修改镜像名称，运行github Action
+
+`Dockerfile` 文件内容如下:
 ```
-FROM ghcr.io/github用户名/镜像名:latest
+FROM node:lts-alpine3.23
 
-ENV DOMAIN=space域名
+WORKDIR /app
+
+COPY index.js index.html package.json ./
+
+RUN apk update && apk add --no-cache bash openssl curl &&\
+    chmod +x index.js &&\
+    npm install
+
+CMD ["node", "index.js"]
 ```
 
-* PaaS 平台设置的环境变量
-  | 变量名        | 是否必须 | 默认值 | 备注 |
-  | ------------ | ------ | ------ | ------ |
-  | UUID         | 否 |de04add9-5c68-6bab-950c-08cd5320df33| 开启了哪吒v1,请修改UUID|
-  | PORT         | 否 |  7860  | 监听端口                    |
-  | NEZHA_SERVER | 否 |        | 哪吒v1填写形式：nz.abc.com:8008   哪吒v0填写形式：nz.abc.com|
-  | NEZHA_PORT   | 否 |        | 哪吒v1没有此变量，v0的agent端口| 
-  | NEZHA_KEY    | 否 |        | 哪吒v1的NZ_CLIENT_SECRET或v0的agent端口 |
-  | NAME         | 否 |        | 节点名称前缀，例如：Glitch |
-  | DOMAIN       | 是 |        | 项目分配的域名或已反代的域名，不包括https://前缀  |
-  | SUB_PATH     | 否 |  sub   | 订阅路径   |
-  | AUTO_ACCESS  | 否 |  true | 是否开启自动访问保活,false为关闭,true为开启,需同时填写DOMAIN变量 |
-
-* 域名/${SUB_APTH}查看节点信息，非标端口，域名:端口/${SUB_APTH}
+参考: huggingface视频教程地址：https://youtu.be/XERxg9AODeo
 
 
 ## 使用cloudflare workers 或 snippets 反代域名给节点套cdn加速
@@ -92,22 +72,3 @@ function getRandomArray(array) {
   return array[randomIndex];
 }
 ```
-
-
-
-## 开源协议说明（基于GPL）
-
-本项目遵循 GNU 通用公共许可证（GNU General Public License, 简称 GPL）发布，并附加以下说明：
-
-1. 你可以自由地使用、复制、修改和分发本项目的源代码，前提是你必须保留原作者的信息及本协议内容；
-2. 修改后的版本也必须以相同协议开源；
-3. **未经原作者明确授权，不得将本项目或其任何部分用于商业用途。**
-
-商业用途包括但不限于：
-- 将本项目嵌入到出售的软件、系统或服务中；
-- 通过本项目直接或间接获利（例如通过广告、SaaS服务等）；
-- 在公司或组织内部作为商业工具使用。
-
-如需获得商业授权，请联系原作者：[admin@eooce.com]
-
-版权所有 ©2025 `eooce`
